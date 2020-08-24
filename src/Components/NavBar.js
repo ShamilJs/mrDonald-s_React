@@ -32,7 +32,9 @@ const ImgLogo = styled.img`
     width: 50px;
 `;
 
-const ImgSign = styled(ImgLogo)``;
+const ImgSign = styled(ImgLogo)`
+    max-height: 30px;
+`;
 
 const Button = styled.button`
     margin-right: 15px;
