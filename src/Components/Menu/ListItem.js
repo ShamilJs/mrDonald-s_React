@@ -1,12 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
+import { currency } from '../Functions/secondaryFunction';
 
 const List = styled.ul`
     display: flex;
     justify-content: space-around;
     flex-wrap: wrap;
 `;
-
 const Item = styled.li`
     position: relative;
     width: 400px;
@@ -38,7 +38,6 @@ const Item = styled.li`
             opacity: 0;
         }
     }
-
 `;
 
 export const ListItem = ({ itemList, setOpenItem }) => (
@@ -50,8 +49,7 @@ export const ListItem = ({ itemList, setOpenItem }) => (
                 onClick={() => setOpenItem(item)}
             >
                 <p>{item.name}</p>
-                <p>{item.price.toLocaleString('ru-RU',
-                {style: 'currency', currency: 'RUB'})}</p>
+                <p>{currency(item.price)}</p>
             </Item>
         ))}
     </List>

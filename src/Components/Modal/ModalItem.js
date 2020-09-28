@@ -1,5 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useCount } from '../Hooks/useCount';
+import { ButtonAdd } from '../Styled/ButtonCheckout';
+import { CountItem } from './CountItem';
+import { currency } from '../Functions/secondaryFunction';
+import { totalPriceItems } from '../Functions/secondaryFunction';
 
 const Overlay = styled.div`
     position: fixed;
@@ -10,11 +15,9 @@ const Overlay = styled.div`
     left: 0;
     width: 100%;
     height: 100%;
-    
     background-color: rgba(0, 0, 0, .5);
     z-index: 20;
 `;
-
 const Modal = styled.div`
     display: flex;
     flex-direction: column;
@@ -24,7 +27,6 @@ const Modal = styled.div`
     background-color: #fff;
     color: black;
 `;
-
 const Banner = styled.div`
     width: 100%;
     height: 200px;
@@ -40,13 +42,10 @@ const NamePrice = styled.div`
     justify-content: space-between;
     align-content: center;
 `;
-
-
 const Name = styled.p`
     font-family: Pacifico;
     font-size: 30px;
 `;
-
 const Price = styled.p`
     font-family: Pacifico;
     font-size: 30px;
@@ -54,35 +53,40 @@ const Price = styled.p`
 const Toppings = styled.ul`
     flex: 1 0 auto;
 `;
-
-const ButtonAdd = styled.button`
-    width: 250px;
-    height: 65px;
-    background: #299B01;
-    border: none;
-    color: white;
-    font-size: 21px;
-    line-height: 25px;
-    margin: 43px 0;
-    border-radius: 5px;
-    :hover {
-        box-shadow: 0 0 10px rgba(0,0,0,0.5);
-        border-radius: 5px;
-    }
-    :active {
-        background-color: #300B01;
-        border: none;
-    }
+const TotalPriceItem = styled.div`
+    display: flex;
+    justify-content: space-between;
+    width: 300px;
+    margin: 20px 0 0 0;
 `;
 
-export const ModalItem = ({ openItem, setOpenItem }) => {
+
+
+
+export const ModalItem = ({ openItem, setOpenItem, orders, setOrders }) => {
+
+    const counter = useCount();
+
     const closeModal = event => {
         if (event.target.id === 'overlay') {
             setOpenItem(null);
         }
     };
 
-    if (!openItem) return null;
+    const order = {
+        // ...openItem  ---> можем сразу все свойства передать
+        name: openItem.name,
+        price: openItem.price,
+        count: counter.count
+    };
+
+    const addToOrder = () => {
+        setOrders([...orders, order]);
+        setOpenItem(null);
+    };
+    
+    // export const totalPriceItems = order => order.count * order.price;
+
     return (
         <Overlay id="overlay"
             onClick={closeModal}>
@@ -90,14 +94,17 @@ export const ModalItem = ({ openItem, setOpenItem }) => {
                 <Banner img={openItem.img}></Banner>
                 <NamePrice>
                     <Name>{openItem.name}</Name>
-                    <Price>{openItem.price.toLocaleString('ru-RU',
-                        {style: 'currency', currency: 'RUB'})}
+                    <Price>{currency(openItem.price)}
                     </Price>
                 </NamePrice>
                 <Toppings>
-                   
                 </Toppings>
-                <ButtonAdd>Добавить</ButtonAdd>
+                <CountItem {...counter}/>
+                <TotalPriceItem>
+                    <div>Цена:</div>
+                    <div>{currency(totalPriceItems(order))} </div>
+                </TotalPriceItem>
+                <ButtonAdd onClick={addToOrder}>Добавить</ButtonAdd>
             </Modal>
         </Overlay>
     )
