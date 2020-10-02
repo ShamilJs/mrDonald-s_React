@@ -46,13 +46,23 @@ const Empty = styled.p`
 `;
 
 
-export const Order = ({ orders }) => {
+export const Order = ({ orders, setOrders }) => {
 
 	const reduceAcc = () => {
 		const acc = orders.reduce((sum, order) => (sum +  totalPriceItems(order)), 0);
 		return currency(acc);
 	};
 
+	const trashOrder = (id) => {
+		const trash = [...orders];
+		trash.forEach((item, i) => {
+			if (item.id === id) {
+				trash.splice(i, 1);
+			}
+		});
+		setOrders(trash);
+	};
+	
     return (
         <>
         <OrderStyled>
@@ -61,7 +71,16 @@ export const Order = ({ orders }) => {
 				{
 					orders.length ? 
 						<OrderList>
-						{orders.map((order, index) =>  <OrderListItem key={index} order={order}/>)}
+						{
+							orders.map(order =>  (
+								<OrderListItem 
+									key={order.id} 
+									order={order} 
+									index={order.id} 
+									trashOrder={trashOrder}
+								/>
+							))
+						}
 						</OrderList> : 
 					<Empty>Список заказов пуст</Empty>
 				}
